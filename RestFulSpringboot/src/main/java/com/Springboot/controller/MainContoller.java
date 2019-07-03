@@ -56,11 +56,13 @@ public class MainContoller {
         JSONObject json = new JSONObject(restfulController.restfulApiKkakao(param));
         String username = auth.getName();
         String keyword = param.get("keyword").toString();
-        //검색 인경우 기록을 남긴다.
-        String flag = param.get("flag").toString();
-        if("search".equals(flag)) {
-        	searchController.insertSearchHist(username, keyword);
-        }
+        searchController.insertSearchHist(username, keyword);
+        return json.toString();
+    }
+    @RequestMapping(value = "/pageSerach", produces = "application/text; charset=utf8", method = RequestMethod.GET)
+    public @ResponseBody String pageSerach(@RequestParam Map<String, Object> param)
+            throws ParseException, JsonProcessingException, org.apache.tomcat.util.json.ParseException {
+        JSONObject json = new JSONObject(restfulController.restfulApiKkakao(param));
         return json.toString();
     }
 

@@ -57,10 +57,7 @@ $(document).ready(function() {
 	
     //검색 버튼 눌러렀을때
     $(".search").on("click", function() {
-        pageNum=1;
-    	maxPage=3;
-    	flag = "search";
-        serachList(pageNum,maxPage, flag);
+        serachList();
     });	
     //내검색목록 눌러렀을때
     $(".userSearchHist").on("click", function() {
@@ -72,11 +69,12 @@ $(document).ready(function() {
     }); 
 });
 
-function serachList(pageNum,maxPage)	{
+//페이징 버튼을위한 함수
+function serachPageingList(pageNum,maxPage)	{
 
     $.ajax({	
-            url: "/serach",	 // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
-            data: {keyword : $('#keyword').val() , listSize : listSize , pageNum: pageNum, flag: flag}, // HTTP 요청과 함께 서버로 보낼 데이터
+            url: "/pageSerach",	 // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
+            data: {keyword : $('#keyword').val() , listSize : listSize , pageNum: pageNum}, // HTTP 요청과 함께 서버로 보낼 데이터
             method: "GET",  // HTTP 요청 방식(GET, POST)
             contentType: "application/x-www-form-urlencoded; charset=UTF-8"
           })
@@ -119,14 +117,12 @@ function serachList(pageNum,maxPage)	{
 		
             $('#pagination').find('.next').click(function(){
                	pageNum =pageNum+1;
-               	flag="page";
-               	serachList(pageNum,maxPage,flag);
+               	serachPageingList(pageNum,maxPage);
             })
             
             $('#pagination').find('.prev').click(function(){
                	pageNum =pageNum-1;
-               	flag="page"
-               	serachList(pageNum,maxPage,flag);
+               	serachPageingList(pageNum,maxPage);
             })
             
             $('#placesList').find('li').click(function(){
@@ -140,6 +136,76 @@ function serachList(pageNum,maxPage)	{
          })	
 }
 
+//검색 버튼 눌렀을대 동작한다..
+function serachList()	{
+	var listSize = 15;
+	var pageNum  = 1;
+	var maxPage = 3;
+    $.ajax({	
+            url: "/serach",	 // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
+            data: {keyword : $('#keyword').val() , listSize : listSize , pageNum: pageNum}, // HTTP 요청과 함께 서버로 보낼 데이터
+            method: "GET",  // HTTP 요청 방식(GET, POST)
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8"
+          })
+        .done(function(result) {	
+            var item = "";
+            var pasobj=JSON.parse(result); 
+            $("#placesList").empty();
+            var el ;
+    		maxPage = pasobj.meta.pageable_count/listSize;
+			$.each(pasobj.documents, function(key,value) {
+                if(key ==0){
+                    drawMap(value.x, value.y); //검색 로딩후 첫번째 값에 지도좌표로 지도 다시그리기
+                 }
+                var directUrl =    "https://map.kakao.com/link/map/" + value.y+"," + value.x;
+                el= document.createElement('li'), itemStr = '<span class="markerbg marker_' + (key+1) + '"></span>' + '<div class="info">' +  ' <h5>' + value.place_name + '</h5>';
+                itemStr += ' <span>' + value.road_address_name + '</span>' + ' <span class="jibun gray">' +  value.address_name  + '</span>';
+                itemStr += ' <span class="tel">' + value.phone  + '</span>'
+                itemStr += ' <a href =' + directUrl +' target="_blank" >지도 바로가기</a> ' + '</div>' + '</div>';
+                itemStr += "<input type='hidden' class='x' id = 'x' value ='"+value.x+"' >";
+                itemStr += "<input type='hidden' class='y' id = 'y' value ='"+value.y+"' >";
+                el.innerHTML = itemStr;
+                el.className = 'item';
+                item+=el;
+
+                $('#placesList').append(el);
+            })
+
+			//페이징 처리
+            $("#pagination").empty();
+            var nextBtn = "<button class='next'>다음</button>";
+            var prevBtn = "<button class='prev'>이전</button>";
+
+            if(1<pageNum){
+           		$("#pagination").append(prevBtn);
+            }
+
+            if(pageNum<maxPage){
+                $("#pagination").append(nextBtn);
+            }
+		
+            $('#pagination').find('.next').click(function(){
+               	pageNum =pageNum+1;
+               	serachPageingList(pageNum,maxPage);
+            })
+            
+            $('#pagination').find('.prev').click(function(){
+               	pageNum =pageNum-1;
+                serachPageingList(pageNum,maxPage);
+            })
+            
+            $('#placesList').find('li').click(function(){
+                var xPosition = $(this).find('.x').val();
+                var yPosition = $(this).find('.y').val();
+                drawMap(xPosition, yPosition);
+            });
+         })
+         .fail(function() {
+             alert("요청 실패");
+         })	
+}
+
+// 유저에 이력을 검색한다.
 function userSearchHistList()   {
     $.ajax({   
         url: "/userSearchHist",   // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
@@ -175,6 +241,7 @@ function userSearchHistList()   {
          alert("요청 실패");
      }) 
 }
+//인기검색어를 검색한다.
 function popularSearchesList()   {
      
     $.ajax({   
