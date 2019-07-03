@@ -93,10 +93,8 @@ function serachList(pageNum,maxPage)	{
                 itemStr += ' <span>' + value.road_address_name + '</span>' + ' <span class="jibun gray">' +  value.address_name  + '</span>';
                 itemStr += ' <span class="tel">' + value.phone  + '</span>'
                 itemStr += ' <a href =' + directUrl +' target="_blank" >지도 바로가기</a> ' + '</div>' + '</div>';
-                
                 itemStr += "<input type='hidden' class='x' id = 'x' value ='"+value.x+"' >";
                 itemStr += "<input type='hidden' class='y' id = 'y' value ='"+value.y+"' >";
-
                 el.innerHTML = itemStr;
                 el.className = 'item';
                 item+=el;
