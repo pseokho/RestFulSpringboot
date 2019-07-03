@@ -49,9 +49,40 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <script type="text/javascript">
-var listSize = 10;
+//페이지당 보여질 list
+var listSize = 15;
+//현제 페이지
 var pageNum  = 1;
-function serachList()	{
+var maxPage = 15;
+//api 최대페이지
+var apiMaxPage =15;
+$(document).ready(function() {
+	
+    //검색 버튼 눌러렀을때
+    $(".search").on("click", function() {
+        serachList(pageNum,apiMaxPage);
+    });	
+    //내검색목록 눌러렀을때
+    $(".userSearchHist").on("click", function() {
+        userSearchHistList();
+    }); 
+    //인기 검색어 목록 눌러렀을때
+    $(".popularSearches").on("click", function() {
+        popularSearchesList();
+    }); 
+});
+
+
+function serachList(pageNum,maxPage)	{
+	var listSize = 15;
+	//현제 페이지
+	var pageNum  = 1;
+	var maxPage = 15;
+	//api 최대페이지
+	var apiMaxPage =15;
+
+	
+	
     $.ajax({	
             url: "/serach",	 // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
             data: {keyword : $('#keyword').val() , listSize : listSize , pageNum: pageNum}, // HTTP 요청과 함께 서버로 보낼 데이터
@@ -64,13 +95,13 @@ function serachList()	{
             var item = "";
             var pasobj=JSON.parse(result); 
             $("#placesList").empty();
-             var el ;
-
-             $.each(pasobj.documents, function(key,value) {
+            var el ;
+			console.log(pasobj.meta.pageable_count)
+			maxPage =pasobj.meta.pageable_count;
+			$.each(pasobj.documents, function(key,value) {
                 if(key ==1){
                     drawMap(value.x, value.y); //검색 로딩후 첫번째 값에 지도좌표로 지도 다시그리기
                  }
-
                 var directUrl =    "https://map.kakao.com/link/map/" + value.y+"," + value.x;
                 el= document.createElement('li'), itemStr = '<span class="markerbg marker_' + (key+1) + '"></span>' + '<div class="info">' +  ' <h5>' + value.place_name + '</h5>';
                 itemStr += ' <span>' + value.road_address_name + '</span>' + ' <span class="jibun gray">' +  value.address_name  + '</span>';
@@ -86,12 +117,35 @@ function serachList()	{
 
                 $('#placesList').append(el);
             })
+            //console.log("최대 검색 가능갯수": + pasobj.meta);
 
-                $('#placesList').find('li').click(function(){
-                    var xPosition = $(this).find('.x').val();
-                    var yPosition = $(this).find('.y').val();
-                    drawMap(xPosition, yPosition);
-                });
+        	console.log("현제 페이지 " + pageNum);
+        	console.log("최대 페이지 " + maxPage);
+        	
+			//페이징 처리
+            $("#pagination").empty();
+            var nextBtn = "<button class='next'>다음</button>";
+            var prevBtn = "<button class='prev'>이전</button>";
+
+            //일딴 버튼만 생성
+            if(pageNum < 2 && pageNum < maxPage){ //1페이지면 다음만 있음
+                //pageNum =pageNum+1;
+                console.log(pageNum);
+                $("#pagination").append(nextBtn);
+           	}else if(apiMaxPage <= pageNum||maxPage <= pageNum ){
+                var prevBtn = "<button class='prev'>이전</button>";
+        	}else{
+           		$("#pagination").append(prevBtn);
+           		$("#pagination").append(nextBtn);
+               	
+            }
+               
+
+            $('#placesList').find('li').click(function(){
+                var xPosition = $(this).find('.x').val();
+                var yPosition = $(this).find('.y').val();
+                drawMap(xPosition, yPosition);
+            });
          })
          .fail(function() {
              alert("요청 실패");
@@ -122,18 +176,14 @@ function userSearchHistList()   {
             item += "<td> ";
             item += value.KEYWORD;
             item += "</td>";
-            //지번
             item += "<td> ";
             item += value.SEARCH_TIME;
             item += "</td>";
-
             item += "</tr>";
-
         })
         item+="</table>";
         $('#searchHistList').append(item); 
         
-
      })
      .fail(function() {
          alert("요청 실패");
@@ -183,22 +233,6 @@ function popularSearchesList()   {
          alert("요청 실패");
      }) 
 }
-$(document).ready(function() {
-
-
-    //검색 버튼 눌러렀을때
-    $(".search").on("click", function() {
-        serachList();
-    });	
-    //내검색목록 눌러렀을때
-    $(".userSearchHist").on("click", function() {
-        userSearchHistList();
-    }); 
-    //인기 검색어 목록 눌러렀을때
-    $(".popularSearches").on("click", function() {
-        popularSearchesList();
-    }); 
-});
 </script>
 <body>
 <div style='display:inline;min-width:130px;'>
