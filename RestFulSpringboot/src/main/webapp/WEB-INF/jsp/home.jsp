@@ -99,12 +99,15 @@ function serachPageingList(pageNum,maxPage)	{
                     drawMap(value.x, value.y); //검색 로딩후 첫번째 값에 지도좌표로 지도 다시그리기
                  }
                 var directUrl =    "https://map.kakao.com/link/map/" + value.y+"," + value.x;
-                el= document.createElement('li'), itemStr = '<span class="markerbg marker_' + (key+1) + '"></span>' + '<div class="info">' +  ' <h5>' + value.place_name + '</h5>';
-                itemStr += ' <span>' + value.road_address_name + '</span>' + ' <span class="jibun gray">' +  value.address_name  + '</span>';
-                itemStr += ' <span class="tel">' + value.phone  + '</span>'
-                itemStr += ' <a href =' + directUrl +' target="_blank" >지도 바로가기</a> ' + '</div>' + '</div>';
-                itemStr += "<input type='hidden' class='x' id = 'x' value ='"+value.x+"' >";
-                itemStr += "<input type='hidden' class='y' id = 'y' value ='"+value.y+"' >";
+                el= document.createElement('li'),
+                itemStr = '<span class="markerbg marker_' + (key+1) + '"></span>'; 
+                itemStr +='<div class="info">' +  ' <h5>' + value.place_name + '</h5>';
+                itemStr +='<span>' + value.road_address_name + '</span>';
+                itemStr += ' <span class="jibun gray">' +  value.address_name  + '</span>';
+                itemStr +='<span class="tel">' + value.phone  + '</span>';
+                itemStr +='<a href =' + directUrl +' target="_blank" >지도 바로가기</a> ' + '</div>' + '</div>';
+                itemStr +="<input type='hidden' class='x' id = 'x' value ='"+value.x+"' >";
+                itemStr +="<input type='hidden' class='y' id = 'y' value ='"+value.y+"' >";
                 el.innerHTML = itemStr;
                 el.className = 'item';
                 item+=el;
@@ -157,12 +160,15 @@ function serachList()	{
                     drawMap(value.x, value.y); //검색 로딩후 첫번째 값에 지도좌표로 지도 다시그리기
                  }
                 var directUrl =    "https://map.kakao.com/link/map/" + value.y+"," + value.x;
-                el= document.createElement('li'), itemStr = '<span class="markerbg marker_' + (key+1) + '"></span>' + '<div class="info">' +  ' <h5>' + value.place_name + '</h5>';
-                itemStr += ' <span>' + value.road_address_name + '</span>' + ' <span class="jibun gray">' +  value.address_name  + '</span>';
-                itemStr += ' <span class="tel">' + value.phone  + '</span>'
-                itemStr += ' <a href =' + directUrl +' target="_blank" >지도 바로가기</a> ' + '</div>' + '</div>';
-                itemStr += "<input type='hidden' class='x' id = 'x' value ='"+value.x+"' >";
-                itemStr += "<input type='hidden' class='y' id = 'y' value ='"+value.y+"' >";
+                el= document.createElement('li'), 
+                itemStr = '<span class="markerbg marker_' + (key+1) + '"></span>'; 
+                itemStr +='<div class="info">' +  ' <h5>' + value.place_name + '</h5>';
+                itemStr +='<span>' + value.road_address_name + '</span>';
+                itemStr +='<span class="jibun gray">' +  value.address_name  + '</span>';
+                itemStr +='<span class="tel">' + value.phone  + '</span>';
+                itemStr +='<a href =' + directUrl +' target="_blank" >지도 바로가기</a> ' + '</div>' + '</div>';
+                itemStr +="<input type='hidden' class='x' id = 'x' value ='"+value.x+"' >";
+                itemStr +="<input type='hidden' class='y' id = 'y' value ='"+value.y+"' >";
                 el.innerHTML = itemStr;
                 el.className = 'item';
                 item+=el;
