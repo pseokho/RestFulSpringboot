@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.Springboot.mapper.SearchHistMapper">
+
+    <select id="popularSearches" resultType="Map">
+        SELECT *
+        FROM (
+            SELECT keyword, COUNT(*) AS searchCount
+            FROM hist_search
+            GROUP BY keyword
+            order by 2 desc
+        )WHERE <![CDATA[  ROWNUM <= 10 ]]> 
+            
+    </select>
+        
+    <insert id="insertSearchHist" parameterType="String">
+        insert into hist_search(
+            username,keyword, search_Time
+        )
+        values(
+            #{username},#{keyword}, CURRENT_TIMESTAMP() 
+        )
+        
+    </insert>
+	
+    <select id="userSearchHist" parameterType="String" resultType="Map">
+        SELECT *
+        FROM (
+            SELECT id, keyword , search_Time
+            FROM hist_search
+            WHERE username = #{username}
+            order by search_Time desc 
+        )WHERE <![CDATA[  ROWNUM <= 10 ]]> 
+            
+    </select>
+    
+
+
+	
+</mapper>
