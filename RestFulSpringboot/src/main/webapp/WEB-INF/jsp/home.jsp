@@ -49,18 +49,16 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <script type="text/javascript">
-//페이지당 보여질 list
 var listSize = 15;
-//현제 페이지
 var pageNum  = 1;
-var maxPage = 15;
-//api 최대페이지
-var apiMaxPage =15;
+var maxPage = 3;
 $(document).ready(function() {
 	
     //검색 버튼 눌러렀을때
     $(".search").on("click", function() {
-        serachList(pageNum,apiMaxPage);
+        pageNum=1;
+    	maxPage=3;
+        serachList(pageNum,maxPage);
     });	
     //내검색목록 눌러렀을때
     $(".userSearchHist").on("click", function() {
@@ -72,23 +70,12 @@ $(document).ready(function() {
     }); 
 });
 
-
 function serachList(pageNum,maxPage)	{
-	var listSize = 15;
-	//현제 페이지
-	var pageNum  = 1;
-	var maxPage = 15;
-	//api 최대페이지
-	var apiMaxPage =15;
 
-	
-	
     $.ajax({	
             url: "/serach",	 // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
             data: {keyword : $('#keyword').val() , listSize : listSize , pageNum: pageNum}, // HTTP 요청과 함께 서버로 보낼 데이터
             method: "GET",  // HTTP 요청 방식(GET, POST)
-            //async: true,	//동기/비동기 방식 기본값 true
-            //dataType: "json"                                   // 서버에서 보내줄 데이터의 타입
             contentType: "application/x-www-form-urlencoded; charset=UTF-8"
           })
         .done(function(result) {	
@@ -96,10 +83,9 @@ function serachList(pageNum,maxPage)	{
             var pasobj=JSON.parse(result); 
             $("#placesList").empty();
             var el ;
-			console.log(pasobj.meta.pageable_count)
-			maxPage =pasobj.meta.pageable_count;
+    		maxPage = pasobj.meta.pageable_count/listSize;
 			$.each(pasobj.documents, function(key,value) {
-                if(key ==1){
+                if(key ==0){
                     drawMap(value.x, value.y); //검색 로딩후 첫번째 값에 지도좌표로 지도 다시그리기
                  }
                 var directUrl =    "https://map.kakao.com/link/map/" + value.y+"," + value.x;
@@ -117,30 +103,29 @@ function serachList(pageNum,maxPage)	{
 
                 $('#placesList').append(el);
             })
-            //console.log("최대 검색 가능갯수": + pasobj.meta);
 
-        	console.log("현제 페이지 " + pageNum);
-        	console.log("최대 페이지 " + maxPage);
-        	
 			//페이징 처리
             $("#pagination").empty();
             var nextBtn = "<button class='next'>다음</button>";
             var prevBtn = "<button class='prev'>이전</button>";
 
-            //일딴 버튼만 생성
-            if(pageNum < 2 && pageNum < maxPage){ //1페이지면 다음만 있음
-                //pageNum =pageNum+1;
-                console.log(pageNum);
+            if(pageNum<maxPage){
                 $("#pagination").append(nextBtn);
-           	}else if(apiMaxPage <= pageNum||maxPage <= pageNum ){
-                var prevBtn = "<button class='prev'>이전</button>";
-        	}else{
-           		$("#pagination").append(prevBtn);
-           		$("#pagination").append(nextBtn);
-               	
             }
-               
-
+            if(1<pageNum){
+           		$("#pagination").append(prevBtn);
+            }
+		
+            $('#pagination').find('.next').click(function(){
+               	pageNum =pageNum+1;
+               	serachList(pageNum,maxPage);
+            })
+            
+            $('#pagination').find('.prev').click(function(){
+               	pageNum =pageNum-1;
+               	serachList(pageNum,maxPage);
+            })
+            
             $('#placesList').find('li').click(function(){
                 var xPosition = $(this).find('.x').val();
                 var yPosition = $(this).find('.y').val();
@@ -156,8 +141,6 @@ function userSearchHistList()   {
     $.ajax({   
         url: "/userSearchHist",   // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
         method: "GET",  // HTTP 요청 방식(GET, POST)
-        //async: true,  //동기/비동기 방식 기본값 true
-        //dataType: "json"                                   // 서버에서 보내줄 데이터의 타입
         contentType: "application/x-www-form-urlencoded; charset=UTF-8"
       })
     .done(function(result) {
@@ -194,8 +177,6 @@ function popularSearchesList()   {
     $.ajax({   
         url: "/popularSearchesHist",   // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
         method: "GET",  // HTTP 요청 방식(GET, POST)
-        //async: true,  //동기/비동기 방식 기본값 true
-        //dataType: "json"                                   // 서버에서 보내줄 데이터의 타입
         contentType: "application/x-www-form-urlencoded; charset=UTF-8"
       })
     .done(function(result) {
@@ -272,7 +253,7 @@ function popularSearchesList()   {
         center : new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
         level : 3 // 지도의 확대 레벨
     };
-    
+ 
     // 지도를 생성합니다    
     var map = new kakao.maps.Map(mapContainer, mapOption);
 
