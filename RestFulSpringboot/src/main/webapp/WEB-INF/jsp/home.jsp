@@ -56,7 +56,6 @@
 .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
 .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
-.info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
 .info .link {color: #5085BB;}
 </style>
 
@@ -384,7 +383,6 @@ function popularSearchesList()   {
          	+ '<div class="info">' 
          	+ '<div class="title">' 
          	+ placeName 
-            + '<div class="close" onclick="closeOverlay()" title="닫기"></div>' 
             + '</div>' 
             + '<div class="body">' 
             + '<div class="img">' 
@@ -410,10 +408,6 @@ function popularSearchesList()   {
         	overlay.setMap(map);
      	});
 
-     	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-     	function closeOverlay() {
-        	overlay.setMap(null);     
-		}
     }
 
 </script>
