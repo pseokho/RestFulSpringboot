@@ -69,6 +69,16 @@ $(document).ready(function() {
     }); 
 });
 
+function noSpaceForm(obj) { // 공백사용못하게
+	    var str_space = /\s/;  // 공백체크
+	    if(str_space.exec(obj.value)) { //공백 체크
+	        alert("공백 입력시 키워드 검색이 불가능합니다.\n\n공백은 자동적으로 제거 됩니다.");
+	        obj.focus();
+	        obj.value = obj.value.replace(' ',''); // 공백제거
+	        return false;
+	    }
+}
+	
 //페이징 버튼을위한 함수
 function serachPageingList(pageNum,maxPage)	{
 
@@ -104,26 +114,15 @@ function serachPageingList(pageNum,maxPage)	{
 
 			//페이징 처리
             $("#pagination").empty();
-            var nextBtn = "<button class='next'>다음</button>";
-            var prevBtn = "<button class='prev'>이전</button>";
-
-            if(1<pageNum){
-           		$("#pagination").append(prevBtn);
+            for(var i=1; i<=maxPage; i++) {
+                var btn = "<button class='pageBtn' id ='"+i+"'style='width: 20px;' value='"+i+"'>"+i+"</button>";
+            	$("#pagination").append(btn);
             }
-
-            if(pageNum<maxPage){
-                $("#pagination").append(nextBtn);
-            }
-		
-            $('#pagination').find('.next').click(function(){
-               	pageNum =pageNum+1;
-               	serachPageingList(pageNum,maxPage);
-            })
-            
-            $('#pagination').find('.prev').click(function(){
-               	pageNum =pageNum-1;
-               	serachPageingList(pageNum,maxPage);
-            })
+			 $('#pagination').find('.pageBtn').click(function(){
+					var temp = $(this).attr('value');
+			    	pageNum =temp;
+			    	serachPageingList(pageNum,maxPage);
+			 })        
             
             $('#placesList').find('li').click(function(){
                 var xPosition = $(this).find('.x').val();
@@ -173,26 +172,16 @@ function serachList()	{
 
 			//페이징 처리
             $("#pagination").empty();
-            var nextBtn = "<button class='next'>다음</button>";
-            var prevBtn = "<button class='prev'>이전</button>";
-
-            if(1<pageNum){
-           		$("#pagination").append(prevBtn);
+            for(var i=1; i<=maxPage; i++) {
+                var btn = "<button class='pageBtn' style='width: 20px;' value='"+i+"'>"+i+"</button>";
+            	$("#pagination").append(btn);
             }
-
-            if(pageNum<maxPage){
-                $("#pagination").append(nextBtn);
-            }
-		
-            $('#pagination').find('.next').click(function(){
-               	pageNum =pageNum+1;
-               	serachPageingList(pageNum,maxPage);
-            })
             
-            $('#pagination').find('.prev').click(function(){
-               	pageNum =pageNum-1;
-                serachPageingList(pageNum,maxPage);
-            })
+			 $('#pagination').find('.pageBtn').click(function(){
+					var temp = $(this).attr('value');
+			    	pageNum =temp;
+			    	serachPageingList(pageNum,maxPage);
+			 })
             
             $('#placesList').find('li').click(function(){
                 var xPosition = $(this).find('.x').val();
@@ -293,8 +282,8 @@ function popularSearchesList()   {
         <div id="menu_wrap" class="bg_white">
             <div class="option">
                 <lable>${username}</lable>
-                <input type="text" value="" id="keyword" size="15">
-                <button class="search" type="submit">검색하기</button>
+                <input type="text" value="" id="keyword" size="15" onkeyup="noSpaceForm(this);" onchange="noSpaceForm(this);">
+                <button class="search" type="submit" >검색하기</button>
             </div>
         <hr>
         <ul id="placesList">
