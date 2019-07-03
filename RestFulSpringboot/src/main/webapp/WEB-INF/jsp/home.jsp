@@ -52,13 +52,15 @@
 var listSize = 15;
 var pageNum  = 1;
 var maxPage = 3;
+var flag = "search";
 $(document).ready(function() {
 	
     //검색 버튼 눌러렀을때
     $(".search").on("click", function() {
         pageNum=1;
     	maxPage=3;
-        serachList(pageNum,maxPage);
+    	flag = "search";
+        serachList(pageNum,maxPage, flag);
     });	
     //내검색목록 눌러렀을때
     $(".userSearchHist").on("click", function() {
@@ -74,7 +76,7 @@ function serachList(pageNum,maxPage)	{
 
     $.ajax({	
             url: "/serach",	 // 클라이언트가 HTTP 요청을 보낼 서버의 URL 주소
-            data: {keyword : $('#keyword').val() , listSize : listSize , pageNum: pageNum}, // HTTP 요청과 함께 서버로 보낼 데이터
+            data: {keyword : $('#keyword').val() , listSize : listSize , pageNum: pageNum, flag: flag}, // HTTP 요청과 함께 서버로 보낼 데이터
             method: "GET",  // HTTP 요청 방식(GET, POST)
             contentType: "application/x-www-form-urlencoded; charset=UTF-8"
           })
@@ -107,21 +109,24 @@ function serachList(pageNum,maxPage)	{
             var nextBtn = "<button class='next'>다음</button>";
             var prevBtn = "<button class='prev'>이전</button>";
 
-            if(pageNum<maxPage){
-                $("#pagination").append(nextBtn);
-            }
             if(1<pageNum){
            		$("#pagination").append(prevBtn);
+            }
+
+            if(pageNum<maxPage){
+                $("#pagination").append(nextBtn);
             }
 		
             $('#pagination').find('.next').click(function(){
                	pageNum =pageNum+1;
-               	serachList(pageNum,maxPage);
+               	flag="page";
+               	serachList(pageNum,maxPage,flag);
             })
             
             $('#pagination').find('.prev').click(function(){
                	pageNum =pageNum-1;
-               	serachList(pageNum,maxPage);
+               	flag="page"
+               	serachList(pageNum,maxPage,flag);
             })
             
             $('#placesList').find('li').click(function(){

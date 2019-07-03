@@ -30,9 +30,9 @@ public class RestFulSpringbootApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		String[] meta = args;
-		if (args.length > 2) {//비밀번호 아이디 등록이 들어온경우발동
-			String user = meta[1];
-			String pwd = passwordEncoder.encode(meta[2]);
+		if (args.length > 1) {//비밀번호 아이디 등록이 들어온경우발동
+			String user = meta[0];
+			String pwd = passwordEncoder.encode(meta[1]);
 			userService.createUsers(user, pwd);
 			userService.createUserAuthority(user);
 			System.out.println("user명  [" + user + "] 비밀번호 : [ ***** ] 으로 생성되었습니다.");

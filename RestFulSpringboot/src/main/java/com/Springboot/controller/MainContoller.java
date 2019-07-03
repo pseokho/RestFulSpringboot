@@ -56,8 +56,11 @@ public class MainContoller {
         JSONObject json = new JSONObject(restfulController.restfulApiKkakao(param));
         String username = auth.getName();
         String keyword = param.get("keyword").toString();
-        //검색 기록을 남긴다.
-        searchController.insertSearchHist(username, keyword);
+        //검색 인경우 기록을 남긴다.
+        String flag = param.get("flag").toString();
+        if("search".equals(flag)) {
+        	searchController.insertSearchHist(username, keyword);
+        }
         return json.toString();
     }
 
