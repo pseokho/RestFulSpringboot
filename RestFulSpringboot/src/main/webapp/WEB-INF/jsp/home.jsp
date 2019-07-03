@@ -43,6 +43,21 @@
 #pagination {margin:10px auto;text-align: center;}
 #pagination a {display:inline-block;margin-right:10px;}
 #pagination .on {font-weight: bold; cursor: default;color:#777;}
+
+.wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+.wrap * {padding: 0;margin: 0;}
+.wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+.wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+.info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+.info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+.info .close:hover {cursor: pointer;}
+.info .body {position: relative;overflow: hidden;}
+.info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+.desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+.info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+.info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+.info .link {color: #5085BB;}
 </style>
 
 <title>Login Demo - Kakao JavaScript SDK</title>
@@ -99,19 +114,18 @@ function serachPageingList(pageNum,maxPage)	{
                     drawMap(value.x, value.y); //검색 로딩후 첫번째 값에 지도좌표로 지도 다시그리기
                  }
                 var directUrl =    "https://map.kakao.com/link/map/" + value.y+"," + value.x;
-                el= document.createElement('li'),
+                el= document.createElement('li'), 
                 itemStr = '<span class="markerbg marker_' + (key+1) + '"></span>'; 
-                itemStr +='<div class="info">' +  ' <h5>' + value.place_name + '</h5>';
-                itemStr +='<span>' + value.road_address_name + '</span>';
-                itemStr += ' <span class="jibun gray">' +  value.address_name  + '</span>';
-                itemStr +='<span class="tel">' + value.phone  + '</span>';
+                itemStr +="<div class='info'>" +  " <h5 class='h5' value ='"+value.place_name+"'>" + value.place_name + "</h5>";
+                itemStr +="<span class='road_adress_name' value='"+value.road_address_name+"'>" + value.road_address_name + "</span>";
+                itemStr +="<span class='jibun gray' value='"+value.address_name +"'>" +  value.address_name  + "</span>";
+                itemStr +="<span class='tel'>" + value.phone  + "</span>";
                 itemStr +='<a href =' + directUrl +' target="_blank" >지도 바로가기</a> ' + '</div>' + '</div>';
                 itemStr +="<input type='hidden' class='x' id = 'x' value ='"+value.x+"' >";
                 itemStr +="<input type='hidden' class='y' id = 'y' value ='"+value.y+"' >";
                 el.innerHTML = itemStr;
                 el.className = 'item';
                 item+=el;
-
                 $('#placesList').append(el);
             })
 
@@ -127,11 +141,15 @@ function serachPageingList(pageNum,maxPage)	{
 			    	serachPageingList(pageNum,maxPage);
 			 })        
             
-            $('#placesList').find('li').click(function(){
-                var xPosition = $(this).find('.x').val();
-                var yPosition = $(this).find('.y').val();
-                drawMap(xPosition, yPosition);
-            });
+	         $('#placesList').find('li').click(function(){
+	            var xPosition = $(this).find('.x').val();
+	            var yPosition = $(this).find('.y').val();
+				var placeName = $(this).find('.h5').attr('value');
+				var adress = $(this).find('.road_adress_name').attr('value');
+				var jibun = $(this).find('.jibun').attr('value');
+	                
+				drawMapList(xPosition, yPosition,placeName,adress,jibun);
+	        });
          })
          .fail(function() {
              alert("요청 실패");
@@ -162,10 +180,10 @@ function serachList()	{
                 var directUrl =    "https://map.kakao.com/link/map/" + value.y+"," + value.x;
                 el= document.createElement('li'), 
                 itemStr = '<span class="markerbg marker_' + (key+1) + '"></span>'; 
-                itemStr +='<div class="info">' +  ' <h5>' + value.place_name + '</h5>';
-                itemStr +='<span>' + value.road_address_name + '</span>';
-                itemStr +='<span class="jibun gray">' +  value.address_name  + '</span>';
-                itemStr +='<span class="tel">' + value.phone  + '</span>';
+                itemStr +="<div class='info'>" +  " <h5 class='h5' value ='"+value.place_name+"'>" + value.place_name + "</h5>";
+                itemStr +="<span class='road_adress_name' value='"+value.road_address_name+"'>" + value.road_address_name + "</span>";
+                itemStr +="<span class='jibun gray' value='"+value.address_name +"'>" +  value.address_name  + "</span>";
+                itemStr +="<span class='tel'>" + value.phone  + "</span>";
                 itemStr +='<a href =' + directUrl +' target="_blank" >지도 바로가기</a> ' + '</div>' + '</div>';
                 itemStr +="<input type='hidden' class='x' id = 'x' value ='"+value.x+"' >";
                 itemStr +="<input type='hidden' class='y' id = 'y' value ='"+value.y+"' >";
@@ -173,6 +191,7 @@ function serachList()	{
                 el.className = 'item';
                 item+=el;
 
+                
                 $('#placesList').append(el);
             })
 
@@ -192,7 +211,11 @@ function serachList()	{
             $('#placesList').find('li').click(function(){
                 var xPosition = $(this).find('.x').val();
                 var yPosition = $(this).find('.y').val();
-                drawMap(xPosition, yPosition);
+				var placeName = $(this).find('.h5').attr('value');
+				var adress = $(this).find('.road_adress_name').attr('value');
+				var jibun = $(this).find('.jibun').attr('value');
+                
+				drawMapList(xPosition, yPosition,placeName,adress,jibun);
             });
          })
          .fail(function() {
@@ -321,7 +344,6 @@ function popularSearchesList()   {
  
     // 지도를 생성합니다    
     var map = new kakao.maps.Map(mapContainer, mapOption);
-
     function drawMap (xPosition , yPosition){
         mapOption = {
             center : new kakao.maps.LatLng(yPosition, xPosition), // 지도의 중심좌표
@@ -336,6 +358,62 @@ function popularSearchesList()   {
         });
         // 마커가 지도 위에 표시되도록 설정합니다
         marker.setMap(map);
+
+    }
+    function drawMapList (xPosition, yPosition,placeName,adress,jibun){
+        mapOption = {
+            center : new kakao.maps.LatLng(yPosition, xPosition), // 지도의 중심좌표
+            level : 3// 지도의 확대 레벨
+            };
+
+        var map = new kakao.maps.Map(mapContainer, mapOption);
+        var markerPosition  = new kakao.maps.LatLng(yPosition, xPosition);// 마커가 표시될 위치입니다
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+        // 마커가 지도 위에 표시되도록 설정합니다
+        marker.setMap(map);
+
+
+
+     	// 커스텀 오버레이에 표시할 컨텐츠 입니다
+     	// 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
+     	// 별도의 이벤트 메소드를 제공하지 않습니다 
+     	var content = '<div class="wrap">' 
+         	+ '<div class="info">' 
+         	+ '<div class="title">' 
+         	+ placeName 
+            + '<div class="close" onclick="closeOverlay()" title="닫기"></div>' 
+            + '</div>' 
+            + '<div class="body">' 
+            + '<div class="img">' 
+            + '</div>' 
+            + '<div class="desc">' 
+            + '<div class="ellipsis">'+adress+'</div>' 
+            + '<div class="jibun ellipsis">'+jibun+'</div>' 
+            + '</div>' 
+            + '</div>' 
+            + '</div>' 
+            + '</div>';
+
+     	// 마커 위에 커스텀오버레이를 표시합니다
+     	// 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
+     	var overlay = new kakao.maps.CustomOverlay({
+         	content: content,
+         	map: map,
+        	position: marker.getPosition()       
+     	});
+
+     	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+     	kakao.maps.event.addListener(marker, 'click', function() {
+        	overlay.setMap(map);
+     	});
+
+     	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+     	function closeOverlay() {
+        	overlay.setMap(null);     
+		}
     }
 
 </script>
