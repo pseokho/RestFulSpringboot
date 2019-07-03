@@ -19,7 +19,15 @@ public interface UserMapper {
 	 * @return 해당유저에 접근 권한을 설정한다.
 	 */
 	public List<String> readAuthority(String username);
-    
+    /**
+     * 어플리케이션 시작시 로그인 계정 생성
+     * @param username
+     * @param password
+     */
 	public void createUsers(String username ,String password);
+	/**
+	 * 어플리 케이션 시작시 생성되는 로그인 계정에 권한 부여
+	 * @param username
+	 */
 	public void createUserAuthority(String username);
 }

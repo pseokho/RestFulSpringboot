@@ -33,22 +33,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*
-         * http .authorizeRequests() .antMatchers("/home/**") .authenticated()
-         * .antMatchers("/**") .permitAll() .and() .httpBasic();
-         */
+
         http.authorizeRequests() 
             .antMatchers("**") 
             .authenticated()
             .and() .httpBasic();
-        ;/*
-          * http.authorizeRequests().antMatchers("/h2-console/**").permitAll().anyRequest
-          * ().authenticated().and().csrf()
-          * .ignoringAntMatchers("/h2-console/**").and().headers().addHeaderWriter( new
-          * XFrameOptionsHeaderWriter(new
-          * WhiteListedAllowFromStrategy(Arrays.asList("localhost")) // 여기!
-          * )).and().httpBasic();
-          */
+        ;
 
 
     }
