@@ -52,7 +52,6 @@ public class RestServiceImpl implements RestfulService {
             GET_URL = GET_URL + "&size=" + listSize; // 한 페이지에 보여질 문서의 개수
             GET_URL = GET_URL + "&page=" + pageNum; // 결과 페이지 번호
 
-            System.out.println("GET_URL : " + GET_URL);
             // get 메서드와 URL 설정
             HttpGet httpGet = new HttpGet(GET_URL);
 
