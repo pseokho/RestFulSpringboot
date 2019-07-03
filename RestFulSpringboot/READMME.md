@@ -1,8 +1,7 @@
 # 개발 테스트를 위한 정리본
 
 ## 개발 배포 방법과 특이사항 정리
-> github 주소  : https://github.com/pseokho/RestFulSpringboot.git
-> 다운로드 링크   :https://github.com/pseokho/RestFulSpringboot/blob/master/RestFulSpringboot/RestFulSpringboot.war
+> 다운로드 링크   : https://github.com/pseokho/RestFulSpringboot/blob/master/RestFulSpringboot/RestFulSpringboot.war
 ### 배포 방식 
 1. war 파일 배포  
 Spring Boot 1.4.2이상은 jar파일로 배포 시 jsp 파일이 정상동작을 하지않는 경우가 있어서 war로 배포 했습니다. 
